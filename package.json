@@ -1,0 +1,12 @@
+{
+  "name": "Netatmo Thermostat Presence controller",
+  "version": "0.0.0",
+  "description": "Presence control for Netatmo thermostat",
+  "author": "Monsonis",
+  "scripts": {
+    "start": "node ./app"
+  },
+  "dependencies": {
+    "express": "~4.13.1"
+  }
+}
