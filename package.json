@@ -1,12 +1,22 @@
 {
-  "name": "Netatmo Thermostat Presence controller",
-  "version": "0.0.0",
+  "name": "netatmo-presence-controller",
+  "version": "0.0.1",
   "description": "Presence control for Netatmo thermostat",
   "author": "Monsonis",
+  "license": "MIT",
+  "keywords": [
+    "netatmo",
+    "thermostat",
+    "presence",
+    "controller"
+  ],
   "scripts": {
     "start": "node ./app"
   },
   "dependencies": {
-    "express": "~4.13.1"
+    "express": "~4.13.1",
+    "ping": "dougluce/node-ping",
+    "config": "~1.19.0",
+    "netatmo": "~1.3.0"
   }
 }
