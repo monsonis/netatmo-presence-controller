@@ -20,32 +20,35 @@ var normalizeMacAddress = function(mac) {
  */
 module.exports.readArpTable = function() {
   return new Promise((resolve, reject) => {
-		var arp = spawn("arp", ["-na"] );
-		var buffer = '';
-		var errstream = '';
-		arp.stdout.on('data', data => {
-			buffer += data;
-		});
-		arp.stderr.on('data', data => {
-			errstream += data;
-		});	
-		arp.on('close', code => {
-			if (code !== 0 && errstream !== '') {
-  		  return reject(errstream);
-			}
-			     
-			var arpTable = [];
-      var lines = buffer.split('\n').filter(String); 
+    var arp = spawn("arp", ["-na"] );
+    var buffer = '';
+    var errstream = '';
+    arp.stdout.on('data', data => {
+      buffer += data;
+    });
+    arp.stderr.on('data', data => {
+      errstream += data;
+    });
+    arp.on('close', code => {
+      if (code !== 0 && errstream !== '') {
+        return reject(errstream);
+      }
+
+      var arpTable = [];
+      var lines = buffer.split('\n').filter(String);
       for (var line in lines)
       {
-        var parts = lines[line].split(' ').filter(String);     
-        var entry = {
-          ip: parts[1].slice(1, -1),
-          mac: normalizeMacAddress(parts[3])
+        var parts = lines[line].split(' ').filter(String);
+        var macAddress = normalizeMacAddress(parts[3]);
+        if (macAddress) {
+          var entry = {
+            ip: parts[1].slice(1, -1),
+            mac: macAddress
+          }
+          arpTable.push(entry);
         }
-        arpTable.push(entry);
       }
       resolve(arpTable);
-		});	
+    });
   });
 };
