@@ -1,0 +1,16 @@
+{
+  "Users": {
+    "user1": "00:00:00:00:00:00",
+    "user2": "00:00:00:00:00:00"
+  },
+  "Netatmo": {
+    "client_id": "",
+    "client_secret": "",
+    "username": "",
+    "password": "",
+    "thermostat" : {
+      "device_id": "00:00:00:00:00:00",
+      "module_id": "00:00:00:00:00:00"
+    }
+  }
+}
