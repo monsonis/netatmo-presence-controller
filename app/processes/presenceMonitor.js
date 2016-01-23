@@ -33,6 +33,7 @@ module.exports = {
       if (newMode) {
         thermostat.setThermostatPoint(newMode).then(status => {
           console.log('People', usersAtHome, 'current mode [', currentMode, '] new mode [', newMode, '] temp', thermState.measured.temperature);
+          scheduler.setNewMode(newMode);
         }).catch(err => {
           console.error(err);
         });

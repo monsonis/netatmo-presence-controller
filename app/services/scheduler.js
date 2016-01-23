@@ -9,6 +9,13 @@ module.exports = {
     }
     return false;
   },
+  
+  setNewMode: function(newMode) {
+    if (this.lastChangedMode !== newMode) {
+      this.lastChangedMode = newMode;
+      console.log('Synchronizing with mode [', newMode, ']');
+    }
+  },
 
   getSuggestedMode: function(usersAtHome, currentMode) {
     if (currentMode != 'program' && currentMode != 'away') {
@@ -23,10 +30,7 @@ module.exports = {
 
   synchronizeWithMode: function(currentMode, suggestedMode) {
     if (this.lastChangedMode === undefined || currentMode == suggestedMode) {
-      if (this.lastChangedMode !== currentMode) {
-          this.lastChangedMode = currentMode;
-          console.log('Synchronizing with mode [', currentMode, ']');
-      }
+      this.setNewMode(currentMode);
     }
   }
 
