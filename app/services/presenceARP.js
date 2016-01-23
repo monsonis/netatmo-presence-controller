@@ -6,16 +6,16 @@ var arp = require('../lib/arp');
 module.exports = {
 
   getMacAddresses: function() {
-    return new Promise((resolve, reject) => {
-      
-      flood.flood({});
-      
-      arp.table(function(err, table){
-        if (err) {
-          return reject(err);
-        }
-        resolve(table.map(arp => { return arp.mac.toUpperCase() }));
-      });
+    return new Promise((resolve, reject) => {      
+      flood.flood({
+        max_hosts: 256
+      }).then(() => {
+        arp.readArpTable().then(table => {
+          resolve(table.map(arp => { return arp.mac.toUpperCase() }));
+        }).catch(error => {
+          reject(error);
+        });
+      });    
     });
   },
 

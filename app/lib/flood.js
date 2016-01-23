@@ -151,25 +151,28 @@ var flood = function(paramd, done) {
 
 var last_flood = 0;
 
-module.exports.flood = function(options, callbak) {
+module.exports.flood = function(options) {
+  return new Promise((resolve, reject) => {
+    
+    var now = (new Date()).getTime();
+    var delta = ( now - last_flood ) / 1000;
+    if (delta < ( 5 * 60 )) {
+      return resolve();
+    }
+    
+    if (options.restrict === undefined) {
+        options.restrict = ipv4();
+    }
+    options.poll = (options.poll !== undefined) ? options.poll : 0;
+    options.verbose = options.verbose || false;
+    options.max_connections = options.max_connections || 64;
+    options.max_hosts = options.max_hosts || 4 * 256;
+    options.timeout = options.timeout || 2500;
+    options.port = options.port || 1;
 
-  if (options.restrict === undefined) {
-      options.restrict = ipv4();
-  }
-
-  options.poll = (options.poll !== undefined) ? options.poll : 0;
-  options.verbose = options.verbose || false;
-  options.max_connections = options.max_connections || 64;
-  options.max_hosts = options.max_hosts || 4 * 256;
-  options.timeout = options.timeout || 2500;
-  options.port = options.port || 1;
-  
-  var now = (new Date()).getTime();
-  var delta = ( now - last_flood ) / 1000;
-  if (delta < ( 5 * 60 )) {
-    return;
-  }
-
-  last_flood = (new Date()).getTime();
-  flood(options, callbak);
+    last_flood = (new Date()).getTime();
+    flood(options, () => {
+      resolve();
+    });
+  });
 };
