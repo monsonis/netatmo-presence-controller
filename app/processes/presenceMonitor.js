@@ -1,39 +1,16 @@
 var thermostat = require('../services/thermostat');
 var presence = require('../services/presenceArp');
+var scheduler = require('../services/scheduler');
 
 const PERIOD = 60 * 1000;
 
 module.exports = {
 
-  lastChangedMode: undefined,
   interval: undefined,
 
   start: function() {
-    var ref = this;
-    this.interval = setInterval(function() {
-
-      var getUsersAtHomePromise = presence.getUsersAtHome();
-      var thermStatePromise = thermostat.getThermostatsData();
-
-      Promise.all([ getUsersAtHomePromise, thermStatePromise ]).then(values => {
-        var usersAtHome = values[0];
-        var peopleAtHome = usersAtHome.length > 0;;
-        var thermState = values[1];
-
-        var currentMode = thermState.setpoint.setpoint_mode;
-        var suggestedMode = ref.getSuggestedMode(peopleAtHome, thermState.setpoint.setpoint_mode);
-
-        if (ref.lastChangedMode === undefined || currentMode == suggestedMode) {
-          ref.lastChangedMode = currentMode;
-        }
-
-        if (!ref.userHasChangedMode(currentMode) && suggestedMode && suggestedMode != currentMode) {
-          console.log('People', usersAtHome, 'current mode [', currentMode, '] suggested [', suggestedMode, '] last [', ref.lastChangedMode, '] temp', thermState.measured.temperature);
-          ref.setThermPointMode(suggestedMode);
-        }
-      }).catch(error => {
-        console.error(error);
-      });
+    this.interval = setInterval(() =>  {
+      this.loop();
     }, PERIOD);
   },
 
@@ -43,24 +20,26 @@ module.exports = {
     }
   },
 
-  setThermPointMode: function(mode, endTime, temp) {
-    thermostat.setThermostatPoint(mode, endTime, temp).then(status => {
-      console.log('Changed mode to ', mode);
-      this.lastChangedMode = mode;
-    }).catch(err => {
-      console.log(err);
+  loop: function() {
+    var getUsersAtHomePromise = presence.getUsersAtHome();
+    var thermStatePromise = thermostat.getThermostatsData();
+
+    Promise.all([ getUsersAtHomePromise, thermStatePromise ]).then(values => {
+      var thermState = values[1];
+      var usersAtHome = values[0];
+      var currentMode = thermState.setpoint.setpoint_mode;
+
+      var newMode = scheduler.getNewMode(usersAtHome, currentMode);
+      if (newMode) {
+        thermostat.setThermostatPoint(newMode).then(status => {
+          console.log('People', usersAtHome, 'current mode [', currentMode, '] new mode [', newMode, '] temp', thermState.measured.temperature);
+        }).catch(err => {
+          console.error(err);
+        });
+      }
+    }).catch(error => {
+      console.error(error);
     });
-  },
-
-  userHasChangedMode: function(currentMode) {
-    return currentMode !== this.lastChangedMode;
-  },
-
-  getSuggestedMode: function(peopleAtHome, currentMode) {
-    if (currentMode != 'program' && currentMode != 'away') {
-      return null;
-    }
-    return peopleAtHome ? 'program' : 'away';
   }
 
 };
