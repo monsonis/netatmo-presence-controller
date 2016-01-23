@@ -18,9 +18,8 @@
     "start": "node ./app"
   },
   "dependencies": {
-    "express": "~4.13.1",
-    "ping": "dougluce/node-ping",
+    "netatmo": "~1.4.0",
     "config": "~1.19.0",
-    "netatmo": "~1.3.0"
+    "arpjs": "~1.1.0"
   }
 }
