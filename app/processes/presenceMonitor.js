@@ -27,13 +27,12 @@ module.exports = {
           ref.lastChangedMode = currentMode;
         }
 
-        console.log(new Date().toISOString(), 'People', usersAtHome, 'current mode [', currentMode, '] suggested [', suggestedMode, '] last [', ref.lastChangedMode, '] temp', thermState.measured.temperature);
-
         if (!ref.userHasChangedMode(currentMode) && suggestedMode && suggestedMode != currentMode) {
+          console.log('People', usersAtHome, 'current mode [', currentMode, '] suggested [', suggestedMode, '] last [', ref.lastChangedMode, '] temp', thermState.measured.temperature);
           ref.setThermPointMode(suggestedMode);
         }
       }).catch(error => {
-        console.log(error);
+        console.error(error);
       });
     }, PERIOD);
   },
