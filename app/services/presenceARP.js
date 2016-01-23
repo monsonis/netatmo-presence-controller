@@ -1,7 +1,7 @@
 var config = require('config');
 var userAdresses = config.get('Users');
-var arp = require('arpjs');
 var flood = require('../lib/flood');
+var arp = require('../lib/arp');
 
 module.exports = {
 
