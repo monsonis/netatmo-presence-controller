@@ -48,6 +48,18 @@ module.exports = {
   getThermostatsData: function() {
     return new Promise((resolve, reject) => {
       var api = this.getApi();
+      api.getThermostatsData(null, (err, result) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(result);
+      });
+    });
+  },
+
+  getThermostatData: function() {
+    return new Promise((resolve, reject) => {
+      var api = this.getApi();
 
       var options = {
         device_id: netatmoConfig.thermostat.device_id,

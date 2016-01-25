@@ -23,7 +23,7 @@ module.exports = {
 
   loop: function() {
     var getUsersAtHomePromise = presence.getUsersAtHome();
-    var thermStatePromise = thermostat.getThermostatsData();
+    var thermStatePromise = thermostat.getThermostatData();
 
     Promise.all([ getUsersAtHomePromise, thermStatePromise ]).then(values => {
       var thermState = values[1];
