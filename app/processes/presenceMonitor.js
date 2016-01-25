@@ -2,21 +2,22 @@ var thermostat = require('../services/thermostat');
 var presence = require('../services/presenceArp');
 var scheduler = require('../services/scheduler');
 
-const PERIOD = 60 * 1000;
+const DEFAULT_INTERVAL = 60 * 1000;
 
 module.exports = {
 
-  interval: undefined,
+  timer: undefined,
 
-  start: function() {
-    this.interval = setInterval(() =>  {
+  start: function(interval) {
+    var execInterval = interval || DEFAULT_INTERVAL;
+    this.timer = setInterval(() =>  {
       this.loop();
-    }, PERIOD);
+    }, execInterval);
   },
 
   stop: function() {
-    if (this.interval !== undefined) {
-      clearInterval(this.interval);
+    if (this.timer !== undefined) {
+      clearInterval(this.timer);
     }
   },
 
