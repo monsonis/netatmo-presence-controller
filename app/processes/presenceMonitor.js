@@ -42,6 +42,17 @@ module.exports = {
     }).catch(error => {
       console.error(error);
     });
+  },
+
+  showThermostatsAvailable: function () {
+    thermostat.getThermostatsData().then(thermostatsData => {
+      thermostatsData.forEach(thermData => {
+        var modules = thermData.modules.map(module => { return module.module_name + ' module_id: ' + module._id });
+        console.log('Found thermostat', thermData.station_name, 'device_id:', thermData._id, 'modules', modules);
+      });
+    }).catch(err => {
+      console.error(err);
+    });
   }
 
 };
